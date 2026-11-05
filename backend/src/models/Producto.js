@@ -18,6 +18,10 @@ const Producto = sequelize.define('Producto', {
   precio: {
     type: DataTypes.DECIMAL(10, 2),
     allowNull: false,
+    get() {
+      const valor = this.getDataValue('precio');
+      return valor !== null ? parseFloat(valor) : null;
+    },
   },
   iva: {
     type: DataTypes.DECIMAL(10, 2),

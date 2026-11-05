@@ -23,7 +23,11 @@ const CAMPOS_EDITABLES = ['nombre', 'descripcion', 'precio', 'iva', 'stock', 'im
  *       200: { description: Lista de productos }
  */
 router.get('/', async (req, res) => {
-  const productos = await Producto.findAll({ ...incluirCategoria, order: [['id_producto', 'ASC']] });
+  const productos = await Producto.findAll({
+    where: { activo: 1 },
+    ...incluirCategoria,
+    order: [['id_producto', 'ASC']],
+  });
   res.json(productos);
 });
 
@@ -43,7 +47,10 @@ router.get('/', async (req, res) => {
  *       404: { description: Producto no existe }
  */
 router.get('/:id', async (req, res) => {
-  const producto = await Producto.findByPk(req.params.id, incluirCategoria);
+  const producto = await Producto.findOne({
+    where: { id_producto: req.params.id, activo: 1 },
+    ...incluirCategoria,
+  });
   if (!producto) return res.status(404).json({ error: 'Producto no encontrado' });
   res.json(producto);
 });
@@ -183,8 +190,26 @@ router.put('/:id', proteger, soloRoles('admin', 'pastelero'), async (req, res) =
 router.delete('/:id', proteger, soloRoles('admin'), async (req, res) => {
   const producto = await Producto.findByPk(req.params.id);
   if (!producto) return res.status(404).json({ error: 'Producto no encontrado' });
-  await producto.destroy();
-  res.json({ mensaje: 'Producto eliminado' });
+  await producto.update({ activo: 0, fecha_baja: new Date() });
+  res.json({ mensaje: 'Producto dado de baja (lógica)' });
+});
+
+/**
+ * @openapi
+ * /api/productos/todos:
+ *   get:
+ *     summary: Lista TODOS los productos, incluidos dados de baja (admin/pastelero)
+ *     tags: [Productos]
+ *     security: [{ bearerAuth: [] }]
+ *     responses:
+ *       200: { description: Catálogo completo }
+ */
+router.get('/todos', proteger, soloRoles('admin', 'pastelero'), async (req, res) => {
+  const productos = await Producto.findAll({
+    ...incluirCategoria,
+    order: [['id_producto', 'ASC']],
+  });
+  res.json(productos);
 });
 
 export default router;

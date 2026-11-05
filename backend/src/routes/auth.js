@@ -20,6 +20,7 @@ export const proteger = async (req, res, next) => {
 
 // ── Middleware de roles: soloRoles('admin', 'pastelero') ──
 export const soloRoles = (...roles) => (req, res, next) => {
+  if (!req.usuario) return res.status(401).json({ error: 'Falta autenticación' });
   if (!roles.includes(req.usuario.rol)) {
     return res.status(403).json({ error: 'No tienes permisos para esto' });
   }
