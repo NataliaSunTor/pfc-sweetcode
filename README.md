@@ -1,60 +1,106 @@
-# SweetCode — Resumen de decisiones de Base de Datos
+# SweetCode — Pastelería artesanal (PFC DAW)
 
-Resumen de lo decidido hasta ahora para el diseño de la BD (EER en MySQL Workbench). Pensado como contexto para trabajar el código en VS Code con Vibe Code.
+Plataforma web completa: venta de productos, pedidos, presupuestos, blog y panel de gestión.
 
-## Stack y entorno
+## Stack
 
-- **BD**: MySQL (contenedor Docker ya levantado)
-- **ORM previsto**: Sequelize (Node.js/Express)
-- **Modelado**: diagrama EER en MySQL Workbench
+- **Front**: React + Bootstrap — puerto **3000** (build servido por nginx en Docker) — *pendiente*
+- **Back**: Node 20 + Express 5, módulos ES (`"type": "module"`) — puerto **4000**
+- **BD**: MySQL 8.4 + Sequelize — database-first: el diseño vive en el EER de MySQL
+  Workbench (`sweetcode`); los modelos en `backend/src/models/` SOLO mapean, jamás `sync()`
+- **Auth**: bcrypt + JWT. Middleware `proteger` y `soloRoles(...roles)` en `backend/src/routes/auth.js`
+- **Docs**: Swagger UI en http://localhost:4000/api-docs (swagger-jsdoc)
+- **Tests**: `node:test` + Supertest → `docker compose exec backend npm test` (12 tests)
+- Todo dockerizado con `docker compose`
 
-## Tabla `usuarios`
+## Estructura
 
-| Columna | Tipo | Notas |
-| --- | --- | --- |
-| id_usuario | INT (PK, NN, AI) | Identificador |
-| nombre | VARCHAR(45) NN | |
-| apellidos | VARCHAR(45) NN | |
-| email | VARCHAR(45) NN | Debería ser UNIQUE (pendiente marcar UQ) |
-| telefono | VARCHAR(45) | |
-| password_hash | VARCHAR(45) | **Revisar longitud**: un hash bcrypt necesita VARCHAR(60); argon2 aún más (VARCHAR(255) recomendado) |
-| rol | VARCHAR(45) | Alternativa: ENUM('admin','cliente','pastelero') |
-| fecha_alta | DATETIME/TIMESTAMP NN | Con DEFAULT CURRENT_TIMESTAMP si MySQL ≥ 5.6.5 |
-| ultimo_acceso | DATETIME/TIMESTAMP | Con DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP |
-| activo | TINYINT(1) NN | Booleano: en MySQL `BOOLEAN` es alias de TINYINT(1) |
+```
+├── docker-compose.yml      # mysql, backend, frontend, grafana
+├── .env                    # credenciales (no subir a repos públicos)
+├── CONTEXT.md              # estado del proyecto y convenciones (léelo primero)
+├── backend/
+│   ├── app.js              # crea y exporta la app Express (sin listen; para tests)
+│   ├── index.js            # arranca el servidor (listen)
+│   ├── src/config/         # db.js, auth.js (JWT), swagger.js
+│   ├── src/models/         # MAYÚSCULAS: Usuario.js, Producto.js, Pedido.js, ... + relaciones.js
+│   ├── src/routes/         # auth, productos, pedidos, direcciones, presupuestos, articulos,
+│   │                       # categorias, usuarios, upload  (cada endpoint con @openapi)
+│   ├── src/seed.js         # datos de prueba (idempotente, findOrCreate)
+│   ├── tests/api.test.js   # 12 tests
+│   └── uploads/            # imágenes subidas (servidas en /uploads)
+└── frontend/               # React (pendiente)
+```
 
-## Decisiones técnicas sobre tipos
+## Arranque
 
-- **Booleanos**: MySQL no tiene BOOLEAN real; `BOOLEAN`/`BOOL` se traducen a `TINYINT(1)`. Guarda 0/1. Es la forma estándar y portátil.
-- **Fechas**: `TIMESTAMP` sí existe, pero el desplegable del editor de tablas del **diagrama EER no lo incluye**. Solución: escribir `TIMESTAMP` a mano en el combobox (es editable) o cambiarlo desde el editor de catálogo (Tabla → pestaña Columns).
-- **Defaults**: solo una columna TIMESTAMP con `DEFAULT CURRENT_TIMESTAMP` por tabla si MySQL < 5.6.5 (comprobar con `SELECT VERSION();`).
+```bash
+docker compose up -d                 # levantar todo
+docker compose logs -f backend       # ver logs del API
+docker compose exec backend node src/seed.js   # poblar BD (idempotente)
+docker compose exec backend npm test            # correr los tests
+```
 
-## Relaciones / Foreign Keys
+- API: http://localhost:4000 — Swagger: http://localhost:4000/api-docs
+- MySQL Workbench: 127.0.0.1:3306 (user/pass en `.env`)
+- Grafana: http://localhost:3001
 
-- En el EER las FK **se crean dibujando una relación**, no editando la columna.
-- Relación existente: `usuarios` (padre, lado del rombo "1") → `direcciones_entre` (hija, lado "n").
-- **Correcto**: rombo junto a `usuarios`; pies de gallo junto a `direcciones_entre`.
-- Herramienta usada: *"Place a Relationship Using Existing Columns"* — clic primero en la columna FK de la tabla hija (`direcciones_entre.id_usuario`), después en la PK de la padre (`usuarios.id_usuario`).
-- **Pendiente**: en `direcciones_entre` hay una columna duplicada `usuarios_id_usuario` creada automáticamente; hay que borrar una de las dos (dejar `id_usuario` como FK y eliminar `usuarios_id_usuario`, o viceversa).
-- El tipo de la columna FK debe coincidir exactamente con la PK referenciada (mismo tipo, mismo UNSIGNED).
 
-## Pendientes de la BD
 
-- [ ] Eliminar columna duplicada `usuarios_id_usuario` en `direcciones_entre`
-- [ ] Marcar `email` como UNIQUE
-- [ ] Ampliar `password_hash` (mín. VARCHAR(60) para bcrypt; recomendado VARCHAR(255))
-- [ ] Confirmar tipo final de `fecha_alta` y `ultimo_acceso` (DATETIME vs TIMESTAMP)
-- [ ] Verificar versión de MySQL para defaults CURRENT_TIMESTAMP
-- [ ] Definir el resto de entidades del modelo (productos, pedidos, presupuestos, blog, panel)
-- [ ] Forward Engineer para generar el script SQL
+## API (resumen)
 
-## Para el código (fase actual)
+| Recurso | Ruta | Acceso |
+|---|---|---|
+| Auth | `/api/auth/registro`, `/login`, GET/PUT `/perfil` | registro/login públicos; perfil con token |
+| Productos | `/api/productos` | GET público; POST/PUT admin+pastelero; DELETE admin |
+| Categorías | `/api/categorias` | GET público; POST/PUT admin+pastelero; DELETE admin (409 si tiene productos/artículos) |
+| Pedidos | `/api/pedidos`, `/:id`, `/:id/estado` | GET: dueño o staff; POST: autenticado (calcula importes y descuenta stock en transacción); PUT estado: staff; DELETE: admin |
+| Direcciones | `/api/direcciones` | dueño o staff; DELETE 409 si tiene pedidos |
+| Presupuestos | `/api/presupuestos`, `/:id/respuesta`, `/:id/estado` | GET: dueño o staff; POST: autenticado; respuesta/estado: staff (el dueño solo acepta/rechaza) |
+| Blog | `/api/articulos` | GET público solo publicados (staff ven borradores); POST/PUT staff; DELETE admin |
+| Usuarios | `/api/usuarios` | solo admin (listar, cambiar rol/activo, baja lógica) |
+| Imágenes | `POST /api/upload` → `/uploads/<file>` | solo staff; máx 5 MB, solo imágenes |
 
-Orden acordado (con David, tutor): primero toda la parte de código; los diagramas de análisis para el 3-nov saldrán del código ya funcionando.
+## Decisiones técnicas (para la memoria)
 
-1. **Conexión y modelos Sequelize**: replicar el EER; empezar por `usuarios` y las dependientes
-2. **Autenticación + seeders**: JWT, registro/login, usuarios de prueba (admin, cliente, pastelero)
-3. **API REST**: CRUD de productos/categorías → pedidos/presupuestos → blog y panel
-4. **Front React + Bootstrap**: consumir la API, empezando por productos
+- **Database-first**: 8 tablas creadas desde el EER (Forward Engineer); Sequelize solo mapea.
+  Todas las FK son `NO ACTION` → los borrados dependientes se hacen a mano en transacción.
+- **Dinero** siempre `DECIMAL(10,2)`, nunca FLOAT. En el modelo Producto, getters convierten a number.
+- **Booleanos** como `TINYINT` (0/1), estándar en MySQL.
+- **Auth**: JWT 24h en header `Authorization: Bearer`. `password_hash` excluido del
+  `defaultScope` (scope `conHash` solo para el login). `proteger` verifica además que el
+  usuario siga activo; el login rechaza usuarios desactivados (baja lógica).
+- **CORS** restringido al front: `origin: ['http://localhost:3000', 'http://localhost:5173']`.
+- **Imágenes**: subida real con `multer` a `backend/uploads/`, servidas con `express.static`
+  en `/uploads`. El nombre generado (timestamp) cabe en `imagen VARCHAR(45)`.
+- **Pedidos**: el servidor calcula `precio_unitario`, `subtotal` e `importe_total` (nunca se
+  fía del cliente) y descuenta stock dentro de una transacción.
+- **Tests**: `node:test` + Supertest en vez de Jest (Jest choca con los módulos ES).
 
-Consejo Docker: montar el código como **volumen** (dependencias instaladas en el host, contenedor solo ejecuta) y red compartida en el `docker-compose` para que `db` y `api` se vean por nombre de servicio.
+## Convenciones de código
+
+- Modelos en `backend/src/models/` con archivo en MAYÚSCULAS (`Producto.js`); los imports
+  deben coincidir exactamente (Docker corre Linux).
+- Las FK se declaran explícitas en el modelo Y en `relaciones.js` (con alias `as`).
+- Cada endpoint nuevo lleva su comentario `@openapi` con su tag.
+- Desarrollo con nodemon dentro del contenedor: `command: npm run dev` en el compose
+  (`CHOKIDAR_USEPOLLING=true` necesario en Windows).
+
+## OJO al instalar paquetes en el backend
+
+El volumen `backend_node_modules` se crea copiando la imagen; tras `npm install <pkg>` en
+`backend/` hay que reconstruir y resetear el volumen:
+
+```bash
+docker compose build --no-cache backend
+docker rm -f sweetcode-backend
+docker volume rm -f sweetcode_codigo_backend_node_modules
+docker compose up -d backend
+```
+
+## Pendiente
+
+- Front React + Bootstrap consumiendo la API (puerto 3000; CORS ya permite 3000 y 5173).
+
+---
+*Historial de diseño de la BD (EER, tipos, FKs) archivado: ver git/versiones anteriores de este README.*
