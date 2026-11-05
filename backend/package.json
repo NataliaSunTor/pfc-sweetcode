@@ -1,0 +1,23 @@
+{
+	"name": "sweetcode-backend",
+	"version": "1.0.0",
+	"type": "module",
+	"private": true,
+	"scripts": {
+		"start": "node index.js",
+		"dev": "CHOKIDAR_USEPOLLING=true nodemon index.js"
+	},
+	"dependencies": {
+		"bcrypt": "^6.0.0",
+		"dotenv": "^18.0.9",
+		"express": "^5.3.0",
+		"jsonwebtoken": "^9.0.3",
+		"mysql2": "^3.24.6",
+		"sequelize": "^6.37.8",
+		"swagger-jsdoc": "^6.3.0",
+		"swagger-ui-express": "^5.0.1"
+	},
+	"devDependencies": {
+		"nodemon": "^3.1.14"
+	}
+}
