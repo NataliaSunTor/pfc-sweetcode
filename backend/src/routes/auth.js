@@ -92,6 +92,7 @@ router.post('/registro', async (req, res) => {
 router.post('/login', async (req, res) => {
   try {
     const { email, password } = req.body;
+     if (!email || !password) return res.status(400).json({ error: 'Faltan email o password' });
     const usuario = await Usuario.scope('conHash').findOne({ where: { email } });
     if (!usuario) return res.status(401).json({ error: 'Credenciales incorrectas' });
 

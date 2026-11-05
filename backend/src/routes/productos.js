@@ -33,6 +33,24 @@ router.get('/', async (req, res) => {
 
 /**
  * @openapi
+ * /api/productos/todos:
+ *   get:
+ *     summary: Lista TODOS los productos, incluidos dados de baja (admin/pastelero)
+ *     tags: [Productos]
+ *     security: [{ bearerAuth: [] }]
+ *     responses:
+ *       200: { description: Catálogo completo }
+ */
+router.get('/todos', proteger, soloRoles('admin', 'pastelero'), async (req, res) => {
+  const productos = await Producto.findAll({
+    ...incluirCategoria,
+    order: [['id_producto', 'ASC']],
+  });
+  res.json(productos);
+});
+
+/**
+ * @openapi
  * /api/productos/{id}:
  *   get:
  *     summary: Devuelve un producto por su id
@@ -194,22 +212,6 @@ router.delete('/:id', proteger, soloRoles('admin'), async (req, res) => {
   res.json({ mensaje: 'Producto dado de baja (lógica)' });
 });
 
-/**
- * @openapi
- * /api/productos/todos:
- *   get:
- *     summary: Lista TODOS los productos, incluidos dados de baja (admin/pastelero)
- *     tags: [Productos]
- *     security: [{ bearerAuth: [] }]
- *     responses:
- *       200: { description: Catálogo completo }
- */
-router.get('/todos', proteger, soloRoles('admin', 'pastelero'), async (req, res) => {
-  const productos = await Producto.findAll({
-    ...incluirCategoria,
-    order: [['id_producto', 'ASC']],
-  });
-  res.json(productos);
-});
+
 
 export default router;
