@@ -26,6 +26,10 @@ const Producto = sequelize.define('Producto', {
   iva: {
     type: DataTypes.DECIMAL(10, 2),
     allowNull: false,
+    get() {
+      const valor = this.getDataValue('iva');
+      return valor !== null ? parseFloat(valor) : null;
+    },
   },
   stock: {
     type: DataTypes.INTEGER,
