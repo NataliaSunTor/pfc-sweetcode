@@ -3,6 +3,20 @@
 	"version": "1.0.0",
 	"private": true,
 	"scripts": {
-		"build": "node build.js"
+		"dev": "vite",
+		"build": "node build.js && vite build",
+		"preview": "vite preview"
+	},
+	"dependencies": {
+		"bootstrap": "^5.3.8",
+		"react": "^19.3.1",
+		"react-bootstrap": "^2.10.10",
+		"react-dom": "^19.3.1",
+		"react-icons": "^5.7.0",
+		"react-router-dom": "^7.18.5"
+	},
+	"devDependencies": {
+		"@vitejs/plugin-react": "^6.2.1",
+		"vite": "^8.3.6"
 	}
 }

@@ -1,0 +1,311 @@
+/* Paleta cálida de pastelería — mobile-first */
+:root {
+  --crema: #fbf6ef;
+  --blanco: #ffffff;
+  --beige: #efe3d3;
+  --marron: #5c4033;
+  --marron-claro: #8a6d5b;
+  --caramelo: #b9794e;
+  --caramelo-oscuro: #9d5f3a;
+  --texto: #3e2f28;
+}
+
+body {
+  background-color: var(--crema);
+  color: var(--texto);
+  font-family: 'Jost', system-ui, sans-serif;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+.sc-brand,
+.sc-titulo {
+  font-family: 'Playfair Display', Georgia, serif;
+  color: var(--marron);
+}
+
+.sc-titulo {
+  font-weight: 700;
+}
+
+/* Header */
+.sc-navbar {
+  background-color: var(--blanco);
+  border-bottom: 1px solid var(--beige);
+}
+
+.sc-brand {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-weight: 800;
+  font-size: 1.6rem;
+  color: var(--caramelo) !important;
+}
+
+.sc-navbar .nav-link {
+  color: var(--marron);
+  font-weight: 500;
+}
+
+.sc-navbar .nav-link.active,
+.sc-navbar .nav-link:hover {
+  color: var(--caramelo);
+}
+
+.sc-icono {
+  display: inline-flex;
+  align-items: center;
+}
+
+.sc-badge-carrito {
+  position: absolute;
+  top: 0;
+  right: -6px;
+  font-size: 0.65rem;
+}
+
+/* Botones principales */
+.btn-caramelo {
+  background-color: var(--caramelo);
+  border-color: var(--caramelo);
+  color: var(--blanco);
+}
+
+.btn-caramelo:hover,
+.btn-caramelo:focus {
+  background-color: var(--caramelo-oscuro);
+  border-color: var(--caramelo-oscuro);
+  color: var(--blanco);
+}
+
+.btn-outline-marron {
+  border-color: var(--marron);
+  color: var(--marron);
+}
+
+.btn-outline-marron:hover {
+  background-color: var(--marron);
+  color: var(--blanco);
+}
+
+/* Footer */
+.sc-footer {
+  background-color: var(--marron);
+  color: var(--beige);
+}
+
+.sc-footer a {
+  color: var(--beige);
+  text-decoration: none;
+}
+
+.sc-footer a:hover {
+  color: var(--blanco);
+}
+
+.sc-brand-footer {
+  color: var(--blanco);
+}
+
+.sc-footer hr {
+  border-color: var(--marron-claro);
+}
+
+/* Hero de la home */
+.sc-hero {
+  background: linear-gradient(160deg, var(--beige) 0%, var(--crema) 60%, var(--blanco) 100%);
+  border-bottom: 1px solid var(--beige);
+  padding: 5rem 0;
+}
+
+.sc-hero-titulo {
+  font-size: clamp(2rem, 5vw, 3.2rem);
+  font-weight: 800;
+}
+
+.sc-hero-subtitulo {
+  font-size: 1.15rem;
+  color: var(--marron-claro);
+  max-width: 620px;
+  margin: 0 auto 1.5rem;
+}
+
+/* Tarjetas de producto / artículo */
+.sc-tarjeta {
+  border: 1px solid var(--beige);
+  border-radius: 0.75rem;
+  overflow: hidden;
+  background-color: var(--blanco);
+  transition: box-shadow 0.15s ease-in-out;
+}
+
+.sc-tarjeta:hover {
+  box-shadow: 0 6px 18px rgba(92, 64, 51, 0.12);
+}
+
+.sc-tarjeta-img {
+  height: 180px;
+  object-fit: cover;
+  background-color: var(--beige);
+}
+
+.sc-tarjeta-sin-imagen {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--marron-claro);
+}
+
+.sc-badge-categoria {
+  background-color: var(--beige) !important;
+  color: var(--marron) !important;
+  text-transform: capitalize;
+}
+
+.sc-precio {
+  font-weight: 700;
+  color: var(--caramelo-oscuro);
+  font-size: 1.1rem;
+}
+
+/* Detalle de producto */
+.sc-detalle-img {
+  width: 100%;
+  max-height: 420px;
+  object-fit: cover;
+  border-radius: 0.75rem;
+  background-color: var(--beige);
+}
+
+/* Carrito */
+.sc-miniatura {
+  width: 56px;
+  height: 56px;
+  object-fit: cover;
+  border-radius: 0.5rem;
+  background-color: var(--beige);
+  flex-shrink: 0;
+}
+
+.sc-sidebar-carrito {
+  max-width: 420px;
+}
+
+/* Enlace al panel en el header */
+.sc-enlace-panel {
+  font-weight: 600;
+  color: var(--caramelo) !important;
+}
+
+/* Panel de administración: menú lateral en desktop, horizontal arriba en móvil */
+.sc-admin-nav {
+  flex-direction: row;
+  overflow-x: auto;
+  gap: 0.25rem;
+  background-color: var(--blanco);
+  border: 1px solid var(--beige);
+  border-radius: 0.75rem;
+  padding: 0.5rem;
+}
+
+.sc-admin-nav .nav-link {
+  color: var(--marron);
+  border-radius: 0.5rem;
+  white-space: nowrap;
+}
+
+.sc-admin-nav .nav-link.active {
+  background-color: var(--caramelo);
+  color: var(--blanco);
+}
+
+@media (min-width: 992px) {
+  .sc-admin-nav {
+    flex-direction: column;
+    overflow-x: visible;
+    position: sticky;
+    top: 90px;
+  }
+}
+
+/* Tarjetas del dashboard */
+.sc-resumen-valor {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 2rem;
+  font-weight: 800;
+  color: var(--caramelo-oscuro);
+}
+
+/* ===== FASE 4 — remates responsive (mobile-first) ===== */
+
+/* Foco visible para teclado */
+:focus-visible {
+  outline: 2px solid var(--caramelo);
+  outline-offset: 2px;
+}
+
+/* Móvil: hero más compacto y CTA grande tipo app */
+@media (max-width: 575.98px) {
+  .sc-hero {
+    padding: 3rem 0;
+  }
+
+  .sc-hero .btn,
+  .sc-acciones-detalle .btn,
+  .sc-pagina-form .btn {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    font-size: 1.05rem;
+  }
+
+  .sc-brand {
+    font-size: 1.35rem;
+  }
+
+  .sc-detalle-img {
+    max-height: 260px;
+  }
+
+  /* Acciones del detalle de producto en columna y a ancho completo */
+  .sc-acciones-detalle {
+    flex-direction: column;
+    align-items: stretch !important;
+  }
+
+  .sc-acciones-detalle .input-group {
+    max-width: none !important;
+  }
+
+  .sc-tarjeta-img {
+    height: 150px;
+  }
+
+  /* Páginas de formulario (login/registro) con márgenes estrechos */
+  .sc-pagina-form {
+    padding-top: 1.5rem !important;
+    padding-bottom: 1.5rem !important;
+  }
+}
+
+/* Hasta lg: el menú desplegado del header con fondo propio y enlaces táctiles */
+@media (max-width: 991.98px) {
+  .sc-navbar .navbar-collapse {
+    background-color: var(--blanco);
+    border-top: 1px solid var(--beige);
+    margin-top: 0.5rem;
+    padding: 0.25rem 0 0.75rem;
+  }
+
+  .sc-navbar .nav-link {
+    padding: 0.65rem 0.25rem;
+  }
+
+  /* Si el sidebar del carrito se abriera en móvil, que ocupe toda la pantalla */
+  .sc-sidebar-carrito {
+    max-width: 100%;
+    width: 100%;
+  }
+}
