@@ -20,8 +20,16 @@ import uploadRoutes from './src/routes/upload.js'
 
 const app = express();
 app.use(express.json());
-// CORS restringido al front (3000 = nginx del compose, 5173 = dev server de Vite)
-app.use(cors({ origin: ['http://localhost:3000', 'http://localhost:5173'] }));
+// CORS: front en localhost (3000 = nginx del compose, 5173 = dev de Vite) y también desde
+// la red local (el móvil entra por la IP del PC, ej. http://192.168.1.37:5173).
+// OJO: con origin como función hay que llamar al callback, no devolver un booleano.
+const esOrigenPermitido = (origin) =>
+  !origin ||
+  /^http:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(origin) ||
+  /^http:\/\/(10\.\d+\.\d+\.\d+|172\.(1[6-9]|2\d|3[01])\.\d+\.\d+|192\.168\.\d+\.\d+)(:\d+)?$/.test(origin);
+app.use(cors({
+  origin: (origin, cb) => cb(null, esOrigenPermitido(origin)),
+}));
 
 // Subidas de imágenes: se guardan en ./uploads y se sirven en /uploads
 const uploadsDir = path.join(process.cwd(), 'uploads');
