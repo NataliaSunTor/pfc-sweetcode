@@ -4,7 +4,7 @@ Plataforma web completa: venta de productos, pedidos, presupuestos, blog y panel
 
 ## Stack
 
-- **Front**: React + Bootstrap — puerto **3000** (build servido por nginx en Docker) — *pendiente*
+- **Front**: React + Bootstrap — puerto **5173** (build servido por nginx en Docker) — *pendiente*
 - **Back**: Node 20 + Express 5, módulos ES (`"type": "module"`) — puerto **4000**
 - **BD**: MySQL 8.4 + Sequelize — database-first: el diseño vive en el EER de MySQL
   Workbench (`sweetcode`); los modelos en `backend/src/models/` SOLO mapean, jamás `sync()`
@@ -70,7 +70,7 @@ docker compose exec backend npm test            # correr los tests
 - **Auth**: JWT 24h en header `Authorization: Bearer`. `password_hash` excluido del
   `defaultScope` (scope `conHash` solo para el login). `proteger` verifica además que el
   usuario siga activo; el login rechaza usuarios desactivados (baja lógica).
-- **CORS** restringido al front: `origin: ['http://localhost:3000', 'http://localhost:5173']`.
+- **CORS** restringido al front: `origin: ['http://localhost:5173']`.
 - **Imágenes**: subida real con `multer` a `backend/uploads/`, servidas con `express.static`
   en `/uploads`. El nombre generado (timestamp) cabe en `imagen VARCHAR(45)`.
 - **Pedidos**: el servidor calcula `precio_unitario`, `subtotal` e `importe_total` (nunca se
@@ -100,7 +100,7 @@ docker compose up -d backend
 
 ## Pendiente
 
-- Front React + Bootstrap consumiendo la API (puerto 3000; CORS ya permite 3000 y 5173).
+- Front React + Bootstrap consumiendo la API (CORS 5173).
 
 ---
 *Historial de diseño de la BD (EER, tipos, FKs) archivado: ver git/versiones anteriores de este README.*

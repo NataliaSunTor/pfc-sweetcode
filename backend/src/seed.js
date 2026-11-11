@@ -46,7 +46,7 @@ const ejecutar = async () => {
 
     // 3) Usuarios — con las columnas nuevas
     const usuarios = [
-      { nombre: 'Admin', apellidos: 'SweetCode', email: 'nataliasuer@gmail.com', rol: 'admin', password: 'admin123' },
+      { nombre: 'Admin', apellidos: 'SweetCode', email: 'nataliasuer@testing.com', rol: 'admin', password: 'admin123' },
       { nombre: 'Paco', apellidos: 'Pastelero', email: 'pastelero@testing.com', rol: 'pastelero', password: 'pastelero123' },
       { nombre: 'Natalia', apellidos: 'Cliente', email: 'cliente@testing.com', rol: 'cliente', password: 'cliente123' },
     ];
