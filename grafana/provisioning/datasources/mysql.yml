@@ -1,0 +1,15 @@
+apiVersion: 1
+
+datasources:
+  - name: MySQL
+    uid: mysql-sweetcode
+    type: mysql
+    access: proxy
+    url: sweetcode-mysql:3306
+    user: ${MYSQL_USER}
+    isDefault: true
+    editable: true
+    jsonData:
+      database: ${MYSQL_DATABASE}
+    secureJsonData:
+      password: ${MYSQL_PASSWORD}

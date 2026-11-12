@@ -1,0 +1,221 @@
+{
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": { "type": "grafana", "uid": "-- Grafana --" },
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "type": "dashboard"
+      }
+    ]
+  },
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 0,
+  "links": [],
+  "panels": [
+    {
+      "id": 1,
+      "type": "stat",
+      "title": "Cantidad Total de Usuarios",
+      "description": "Todos los usuarios registrados (admin, pastelero y cliente)",
+      "gridPos": { "h": 7, "w": 8, "x": 0, "y": 0 },
+      "datasource": { "type": "mysql", "uid": "mysql-sweetcode" },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "thresholds" },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": ["lastNotNull"],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "targets": [
+        {
+          "datasource": { "type": "mysql", "uid": "mysql-sweetcode" },
+          "refId": "A",
+          "format": "table",
+          "rawSql": "SELECT COUNT(*) AS total FROM usuarios;",
+          "editorMode": "code"
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "type": "stat",
+      "title": "Cantidad de Clientes",
+      "description": "Usuarios con rol = cliente",
+      "gridPos": { "h": 7, "w": 8, "x": 8, "y": 0 },
+      "datasource": { "type": "mysql", "uid": "mysql-sweetcode" },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "thresholds" },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "blue", "value": null }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": ["lastNotNull"],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "targets": [
+        {
+          "datasource": { "type": "mysql", "uid": "mysql-sweetcode" },
+          "refId": "A",
+          "format": "table",
+          "rawSql": "SELECT COUNT(*) AS total FROM usuarios WHERE rol = 'cliente';",
+          "editorMode": "code"
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "type": "stat",
+      "title": "Clientes con Pedidos Activos",
+      "description": "Clientes con 1 o mas pedidos en estado pendiente, en_preparacion o enviado",
+      "gridPos": { "h": 7, "w": 8, "x": 16, "y": 0 },
+      "datasource": { "type": "mysql", "uid": "mysql-sweetcode" },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "thresholds" },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "orange", "value": null }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": ["lastNotNull"],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "targets": [
+        {
+          "datasource": { "type": "mysql", "uid": "mysql-sweetcode" },
+          "refId": "A",
+          "format": "table",
+          "rawSql": "SELECT COUNT(DISTINCT p.id_usuario) AS total FROM pedidos p JOIN usuarios u ON u.id_usuario = p.id_usuario WHERE u.rol = 'cliente' AND p.estado IN ('pendiente', 'en_preparacion', 'enviado');",
+          "editorMode": "code"
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "type": "timeseries",
+      "title": "Evolucion de Registros de Usuarios",
+      "description": "Numero acumulado de usuarios registrados por dia (fecha_alta)",
+      "gridPos": { "h": 10, "w": 24, "x": 0, "y": 7 },
+      "datasource": { "type": "mysql", "uid": "mysql-sweetcode" },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "palette-classic" },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "Usuarios",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 15,
+            "gradientMode": "none",
+            "hideFrom": { "legend": false, "tooltip": false, "viz": false },
+            "insertNulls": false,
+            "lineInterpolation": "smooth",
+            "lineWidth": 2,
+            "pointSize": 5,
+            "scaleDistribution": { "type": "linear" },
+            "showPoints": "auto",
+            "spanNulls": true,
+            "stacking": { "group": "A", "mode": "none" },
+            "thresholdsStyle": { "mode": "off" }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "calcs": ["lastNotNull"],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "targets": [
+        {
+          "datasource": { "type": "mysql", "uid": "mysql-sweetcode" },
+          "refId": "A",
+          "format": "time_series",
+          "rawSql": "SELECT d AS time, SUM(c) OVER (ORDER BY d) AS registros FROM (SELECT DATE(fecha_alta) AS d, COUNT(*) AS c FROM usuarios GROUP BY DATE(fecha_alta)) t ORDER BY time;",
+          "editorMode": "code"
+        }
+      ]
+    }
+  ],
+  "refresh": "1m",
+  "schemaVersion": 39,
+  "tags": ["sweetcode", "usuarios"],
+  "templating": { "list": [] },
+  "time": { "from": "now-12M", "to": "now" },
+  "timepicker": {},
+  "timezone": "browser",
+  "title": "SweetCode - Usuarios",
+  "uid": "sweetcode-usuarios",
+  "version": 1,
+  "weekStart": ""
+}

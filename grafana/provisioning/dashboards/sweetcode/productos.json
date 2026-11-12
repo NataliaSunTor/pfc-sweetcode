@@ -1,0 +1,272 @@
+{
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": { "type": "grafana", "uid": "-- Grafana --" },
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "type": "dashboard"
+      }
+    ]
+  },
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 0,
+  "links": [],
+  "panels": [
+    {
+      "id": 1,
+      "type": "piechart",
+      "title": "Productos En Stock / Sin Stock",
+      "description": "Productos activos con stock > 0 frente a stock = 0",
+      "gridPos": { "h": 9, "w": 8, "x": 0, "y": 0 },
+      "datasource": { "type": "mysql", "uid": "mysql-sweetcode" },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "palette-classic" },
+          "custom": {
+            "hideFrom": { "legend": false, "tooltip": false, "viz": false }
+          },
+          "mappings": [],
+          "unit": "short"
+        },
+        "overrides": [
+          {
+            "matcher": { "id": "byName", "options": "en_stock" },
+            "properties": [
+              { "id": "color", "value": { "mode": "fixed", "fixedColor": "green" } }
+            ]
+          },
+          {
+            "matcher": { "id": "byName", "options": "sin_stock" },
+            "properties": [
+              { "id": "color", "value": { "mode": "fixed", "fixedColor": "red" } }
+            ]
+          }
+        ]
+      },
+      "options": {
+        "legend": {
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true,
+          "values": ["value", "percent"]
+        },
+        "pieType": "donut",
+        "reduceOptions": {
+          "calcs": ["lastNotNull"],
+          "fields": "",
+          "values": false
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        },
+        "displayLabels": ["name", "percent"]
+      },
+      "targets": [
+        {
+          "datasource": { "type": "mysql", "uid": "mysql-sweetcode" },
+          "refId": "A",
+          "format": "table",
+          "rawSql": "SELECT CASE WHEN stock > 0 THEN 'en_stock' ELSE 'sin_stock' END AS estado, COUNT(*) AS total FROM productos WHERE activo = 1 GROUP BY CASE WHEN stock > 0 THEN 'en_stock' ELSE 'sin_stock' END;",
+          "editorMode": "code"
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "type": "table",
+      "title": "Producto Mas Vendido",
+      "description": "Producto con mas unidades vendidas segun lineas_pedido",
+      "gridPos": { "h": 9, "w": 8, "x": 8, "y": 0 },
+      "datasource": { "type": "mysql", "uid": "mysql-sweetcode" },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "thresholds" },
+          "custom": {
+            "align": "auto",
+            "cellOptions": { "type": "auto" },
+            "inspect": false
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": { "id": "byName", "options": "unidades_vendidas" },
+            "properties": [
+              {
+                "id": "custom.cellOptions",
+                "value": { "type": "color-text", "mode": "basic" }
+              },
+              {
+                "id": "color",
+                "value": { "mode": "continuous-GrYlRd" }
+              },
+              {
+                "id": "custom.width",
+                "value": 150
+              }
+            ]
+          }
+        ]
+      },
+      "options": {
+        "cellHeight": "md",
+        "footer": { "countRows": false, "fields": "", "reducer": ["sum"], "show": false },
+        "showHeader": true
+      },
+      "targets": [
+        {
+          "datasource": { "type": "mysql", "uid": "mysql-sweetcode" },
+          "refId": "A",
+          "format": "table",
+          "rawSql": "SELECT pr.nombre AS producto, COALESCE(SUM(lp.cantidad), 0) AS unidades_vendidas FROM productos pr LEFT JOIN lineas_pedido lp ON lp.id_producto = pr.id_producto WHERE pr.activo = 1 GROUP BY pr.id_producto, pr.nombre ORDER BY unidades_vendidas DESC LIMIT 1;",
+          "editorMode": "code"
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "type": "table",
+      "title": "Producto Menos Vendido",
+      "description": "Producto con menos unidades vendidas segun lineas_pedido (incluye los que nunca se han vendido)",
+      "gridPos": { "h": 9, "w": 8, "x": 16, "y": 0 },
+      "datasource": { "type": "mysql", "uid": "mysql-sweetcode" },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "thresholds" },
+          "custom": {
+            "align": "auto",
+            "cellOptions": { "type": "auto" },
+            "inspect": false
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "red", "value": null }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": { "id": "byName", "options": "unidades_vendidas" },
+            "properties": [
+              {
+                "id": "custom.cellOptions",
+                "value": { "type": "color-text", "mode": "basic" }
+              },
+              {
+                "id": "color",
+                "value": { "mode": "continuous-RdYlGr" }
+              },
+              {
+                "id": "custom.width",
+                "value": 150
+              }
+            ]
+          }
+        ]
+      },
+      "options": {
+        "cellHeight": "md",
+        "footer": { "countRows": false, "fields": "", "reducer": ["sum"], "show": false },
+        "showHeader": true
+      },
+      "targets": [
+        {
+          "datasource": { "type": "mysql", "uid": "mysql-sweetcode" },
+          "refId": "A",
+          "format": "table",
+          "rawSql": "SELECT pr.nombre AS producto, COALESCE(SUM(lp.cantidad), 0) AS unidades_vendidas FROM productos pr LEFT JOIN lineas_pedido lp ON lp.id_producto = pr.id_producto WHERE pr.activo = 1 GROUP BY pr.id_producto, pr.nombre ORDER BY unidades_vendidas ASC LIMIT 1;",
+          "editorMode": "code"
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "type": "timeseries",
+      "title": "Stock Total en el Tiempo",
+      "description": "Unidades de stock acumuladas segun la fecha de alta de cada producto",
+      "gridPos": { "h": 10, "w": 24, "x": 0, "y": 9 },
+      "datasource": { "type": "mysql", "uid": "mysql-sweetcode" },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "palette-classic" },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "Unidades",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 15,
+            "gradientMode": "none",
+            "hideFrom": { "legend": false, "tooltip": false, "viz": false },
+            "insertNulls": false,
+            "lineInterpolation": "smooth",
+            "lineWidth": 2,
+            "pointSize": 5,
+            "scaleDistribution": { "type": "linear" },
+            "showPoints": "auto",
+            "spanNulls": true,
+            "stacking": { "group": "A", "mode": "none" },
+            "thresholdsStyle": { "mode": "off" }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null }
+            ]
+          },
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "calcs": ["lastNotNull"],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "targets": [
+        {
+          "datasource": { "type": "mysql", "uid": "mysql-sweetcode" },
+          "refId": "A",
+          "format": "time_series",
+          "rawSql": "SELECT d AS time, SUM(s) OVER (ORDER BY d) AS stock_total FROM (SELECT DATE(fecha_alta) AS d, SUM(stock) AS s FROM productos WHERE activo = 1 GROUP BY DATE(fecha_alta)) t ORDER BY time;",
+          "editorMode": "code"
+        }
+      ]
+    }
+  ],
+  "refresh": "1m",
+  "schemaVersion": 39,
+  "tags": ["sweetcode", "productos"],
+  "templating": { "list": [] },
+  "time": { "from": "now-12M", "to": "now" },
+  "timepicker": {},
+  "timezone": "browser",
+  "title": "SweetCode - Productos",
+  "uid": "sweetcode-productos",
+  "version": 1,
+  "weekStart": ""
+}

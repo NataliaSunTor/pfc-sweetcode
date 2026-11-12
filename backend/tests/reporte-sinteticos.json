@@ -1,0 +1,243 @@
+{
+  "base": "http://localhost:4000",
+  "fecha": "2026-11-12T08:34:59.407Z",
+  "usuarios": [
+    {
+      "email": "cliente1@sintetico.test",
+      "password": "Sintetico123!",
+      "id_usuario": 6,
+      "nombre": "Mateo",
+      "apellidos": "García García",
+      "id_direccion": 4,
+      "pedidos": [
+        {
+          "id_pedido": 5,
+          "estado": "entregado",
+          "importe_total": 2.5,
+          "lineas": 1
+        }
+      ]
+    },
+    {
+      "email": "cliente2@sintetico.test",
+      "password": "Sintetico123!",
+      "id_usuario": 7,
+      "nombre": "Inés",
+      "apellidos": "Martínez Fernández",
+      "id_direccion": 5,
+      "pedidos": [
+        {
+          "id_pedido": 6,
+          "estado": "en_preparacion",
+          "importe_total": 2.5,
+          "lineas": 1
+        },
+        {
+          "id_pedido": 7,
+          "estado": "en_preparacion",
+          "importe_total": 45.9,
+          "lineas": 3
+        },
+        {
+          "id_pedido": 8,
+          "estado": "entregado",
+          "importe_total": 2.5,
+          "lineas": 1
+        }
+      ]
+    },
+    {
+      "email": "cliente3@sintetico.test",
+      "password": "Sintetico123!",
+      "id_usuario": 8,
+      "nombre": "Hugo",
+      "apellidos": "Fernández Díaz",
+      "id_direccion": 6,
+      "pedidos": [
+        {
+          "id_pedido": 9,
+          "estado": "en_preparacion",
+          "importe_total": 56.9,
+          "lineas": 2
+        },
+        {
+          "id_pedido": 10,
+          "estado": "entregado",
+          "importe_total": 2.5,
+          "lineas": 1
+        },
+        {
+          "id_pedido": 11,
+          "estado": "entregado",
+          "importe_total": 55.5,
+          "lineas": 1
+        }
+      ]
+    },
+    {
+      "email": "cliente4@sintetico.test",
+      "password": "Sintetico123!",
+      "id_usuario": 9,
+      "nombre": "Mateo",
+      "apellidos": "Gómez Pérez",
+      "id_direccion": 7,
+      "pedidos": [
+        {
+          "id_pedido": 12,
+          "estado": "pendiente",
+          "importe_total": 34.1,
+          "lineas": 3
+        },
+        {
+          "id_pedido": 13,
+          "estado": "pendiente",
+          "importe_total": 1.4,
+          "lineas": 1
+        },
+        {
+          "id_pedido": 14,
+          "estado": "entregado",
+          "importe_total": 12,
+          "lineas": 2
+        }
+      ]
+    },
+    {
+      "email": "cliente5@sintetico.test",
+      "password": "Sintetico123!",
+      "id_usuario": 10,
+      "nombre": "Hugo",
+      "apellidos": "Fernández Rodríguez",
+      "id_direccion": 8,
+      "pedidos": [
+        {
+          "id_pedido": 15,
+          "estado": "entregado",
+          "importe_total": 4.2,
+          "lineas": 1
+        }
+      ]
+    },
+    {
+      "email": "cliente6@sintetico.test",
+      "password": "Sintetico123!",
+      "id_usuario": 11,
+      "nombre": "Emma",
+      "apellidos": "Pérez García",
+      "id_direccion": 9,
+      "pedidos": [
+        {
+          "id_pedido": 16,
+          "estado": "cancelado",
+          "importe_total": 2.8,
+          "lineas": 1
+        }
+      ]
+    },
+    {
+      "email": "cliente7@sintetico.test",
+      "password": "Sintetico123!",
+      "id_usuario": 12,
+      "nombre": "Inés",
+      "apellidos": "Pérez Torres",
+      "id_direccion": 10,
+      "pedidos": [
+        {
+          "id_pedido": 17,
+          "estado": "en_preparacion",
+          "importe_total": 7,
+          "lineas": 1
+        },
+        {
+          "id_pedido": 18,
+          "estado": "pendiente",
+          "importe_total": 4.2,
+          "lineas": 1
+        },
+        {
+          "id_pedido": 19,
+          "estado": "enviado",
+          "importe_total": 5.6,
+          "lineas": 1
+        }
+      ]
+    },
+    {
+      "email": "cliente8@sintetico.test",
+      "password": "Sintetico123!",
+      "id_usuario": 13,
+      "nombre": "Pablo",
+      "apellidos": "Sánchez Fernández",
+      "id_direccion": 11,
+      "pedidos": []
+    },
+    {
+      "email": "cliente9@sintetico.test",
+      "password": "Sintetico123!",
+      "id_usuario": 14,
+      "nombre": "Álvaro",
+      "apellidos": "Gómez López",
+      "id_direccion": 12,
+      "pedidos": []
+    },
+    {
+      "email": "cliente10@sintetico.test",
+      "password": "Sintetico123!",
+      "id_usuario": 15,
+      "nombre": "Álvaro",
+      "apellidos": "Gómez Gómez",
+      "id_direccion": 13,
+      "pedidos": []
+    },
+    {
+      "email": "cliente11@sintetico.test",
+      "password": "Sintetico123!",
+      "id_usuario": 16,
+      "nombre": "Inés",
+      "apellidos": "Sánchez Pérez",
+      "id_direccion": 14,
+      "pedidos": []
+    },
+    {
+      "email": "cliente12@sintetico.test",
+      "password": "Sintetico123!",
+      "id_usuario": 17,
+      "nombre": "Martín",
+      "apellidos": "Sánchez López",
+      "id_direccion": 15,
+      "pedidos": []
+    },
+    {
+      "email": "cliente13@sintetico.test",
+      "password": "Sintetico123!",
+      "id_usuario": 18,
+      "nombre": "Inés",
+      "apellidos": "Martínez García",
+      "id_direccion": 16,
+      "pedidos": []
+    },
+    {
+      "email": "cliente14@sintetico.test",
+      "password": "Sintetico123!",
+      "id_usuario": 19,
+      "nombre": "Valeria",
+      "apellidos": "García Díaz",
+      "id_direccion": 17,
+      "pedidos": []
+    },
+    {
+      "email": "cliente15@sintetico.test",
+      "password": "Sintetico123!",
+      "id_usuario": 20,
+      "nombre": "Carmen",
+      "apellidos": "García Fernández",
+      "id_direccion": 18,
+      "pedidos": []
+    }
+  ],
+  "resumen": {
+    "usuarios": 15,
+    "pedidos": 15,
+    "importeTotal": 239.6
+  }
+}

@@ -23,7 +23,7 @@ async function desmarcarPrincipal(id_usuario, exceptoId, t) {
  * @openapi
  * /api/direcciones:
  *   get:
- *     summary: Lista direcciones (cliente ve solo las suyas; staff todas)
+ *     summary: Lista direcciones (cliente ve solo las suyas)
  *     tags: [Direcciones]
  *     security: [{ bearerAuth: [] }]
  *     responses:
@@ -31,7 +31,7 @@ async function desmarcarPrincipal(id_usuario, exceptoId, t) {
  *       401: { description: Falta token }
  */
 router.get('/', proteger, async (req, res) => {
-  const where = esStaff(req) ? {} : { id_usuario: req.usuario.id_usuario };
+  const where = { id_usuario: req.usuario.id_usuario };
   const direcciones = await DireccionEntrega.findAll({ where, order: [['id_direccion', 'ASC']] });
   res.json(direcciones);
 });
