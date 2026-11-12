@@ -13,6 +13,7 @@ export default function AdminLayout() {
           <Nav className="sc-admin-nav flex-nowrap">
             <Nav.Link as={NavLink} to="/admin" end>Inicio</Nav.Link>
             <Nav.Link as={NavLink} to="/admin/productos">Productos</Nav.Link>
+            <Nav.Link as={NavLink} to="/admin/blog">Blog</Nav.Link>
             <Nav.Link as={NavLink} to="/admin/pedidos">Pedidos</Nav.Link>
             <Nav.Link as={NavLink} to="/admin/presupuestos">Presupuestos</Nav.Link>
             {rol === 'admin' && <Nav.Link as={NavLink} to="/admin/usuarios">Usuarios</Nav.Link>}

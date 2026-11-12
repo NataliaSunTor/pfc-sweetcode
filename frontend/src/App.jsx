@@ -17,6 +17,7 @@ import AdminProductos from './pages/admin/AdminProductos.jsx';
 import AdminPedidos from './pages/admin/AdminPedidos.jsx';
 import AdminPresupuestos from './pages/admin/AdminPresupuestos.jsx';
 import AdminUsuarios from './pages/admin/AdminUsuarios.jsx';
+import AdminArticulos from './pages/admin/AdminArticulos.jsx';
 import { SobreNosotros, Contacto, NoEncontrada } from './pages/Paginas.jsx';
 
 export default function App() {
@@ -45,6 +46,7 @@ export default function App() {
             <Route path="/admin/pedidos" element={<AdminPedidos />} />
             <Route path="/admin/presupuestos" element={<AdminPresupuestos />} />
             <Route path="/admin/usuarios" element={<AdminUsuarios />} />
+            <Route path="/admin/blog" element={<AdminArticulos />} />
           </Route>
         </Route>
 
