@@ -1,13 +1,11 @@
 import { Button, Container, Tab, Tabs } from 'react-bootstrap';
 import { useAuth } from '../context/AuthContext.jsx';
-import { Link } from 'react-router-dom';
 import PerfilForm from '../components/cuenta/PerfilForm.jsx';
 import PedidosLista from '../components/cuenta/PedidosLista.jsx';
 import DireccionesCrud from '../components/cuenta/DireccionesCrud.jsx';
 import PresupuestosCrud from '../components/cuenta/PresupuestosCrud.jsx';
 
 export default function MiCuenta() {
-  const { usuario, salir } = useAuth();
   const { usuario, esStaff, salir } = useAuth();
 
   return (
@@ -29,14 +27,6 @@ export default function MiCuenta() {
         <Tab eventKey="presupuestos" title="Presupuestos">
           <PresupuestosCrud />
         </Tab>
-        {esStaff && (
-          <Tab eventKey="gestion" title="Gestión">
-            <div className="text-center py-5">
-              <p className="mb-3">Tienes acceso al panel de gestión de la pastelería.</p>
-              <Button as={Link} to="/admin" variant="caramelo">Abrir panel de gestión</Button>
-            </div>
-          </Tab>
-        )}
       </Tabs>
     </Container>
   );

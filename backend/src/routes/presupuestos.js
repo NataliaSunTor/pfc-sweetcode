@@ -1,8 +1,10 @@
 import express from 'express';
 
+import sequelize from '../config/db.js';
 import SolicitudPresupuesto from '../models/SolicitudPresupuesto.js';
 import Usuario from '../models/Usuario.js';
 import Pedido from '../models/Pedido.js';
+import DireccionEntrega from '../models/DireccionEntrega.js';
 import '../models/relaciones.js';
 
 import { proteger, soloRoles } from './auth.js';
@@ -110,6 +112,51 @@ router.post('/', proteger, async (req, res) => {
 
 /**
  * @openapi
+ * /api/presupuestos/{id}:
+ *   put:
+ *     summary: Edita una solicitud pendiente (el dueño o staff) — tipo_evento, descripcion y fecha_entrega
+ *     tags: [Presupuestos]
+ *     security: [{ bearerAuth: [] }]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema: { type: integer }
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               tipo_evento: { type: string }
+ *               descripcion: { type: string }
+ *               fecha_entrega: { type: string, format: date-time }
+ *     responses:
+ *       200: { description: Solicitud actualizada }
+ *       400: { description: La solicitud no está pendiente o falta algún campo }
+ *       403: { description: Sin permisos }
+ *       404: { description: Solicitud no existe }
+ */
+router.put('/:id', proteger, async (req, res) => {
+  const solicitud = await SolicitudPresupuesto.findByPk(req.params.id);
+  if (!solicitud) return res.status(404).json({ error: 'Solicitud no encontrada' });
+  if (!esStaff(req) && solicitud.id_usuario !== req.usuario.id_usuario) {
+    return res.status(403).json({ error: 'No es tu solicitud' });
+  }
+  if (solicitud.estado !== 'pendiente') {
+    return res.status(400).json({ error: 'Solo puedes editar la solicitud mientras esté pendiente' });
+  }
+  const { tipo_evento, descripcion, fecha_entrega } = req.body;
+  if (!tipo_evento || !descripcion || !fecha_entrega) {
+    return res.status(400).json({ error: 'Faltan tipo_evento, descripcion o fecha_entrega' });
+  }
+  await solicitud.update({ tipo_evento, descripcion, fecha_entrega: new Date(fecha_entrega) });
+  res.json(solicitud);
+});
+
+/**
+ * @openapi
  * /api/presupuestos/{id}/respuesta:
  *   put:
  *     summary: Responde una solicitud con precio estimado (solo admin/pastelero)
@@ -191,6 +238,37 @@ router.put('/:id/estado', proteger, async (req, res) => {
     if (solicitud.estado !== 'presupuestado') {
       return res.status(400).json({ error: 'Aún no hay presupuesto que aceptar/rechazar' });
     }
+  }
+  // Al aceptar, el presupuesto se convierte en pedido (una sola vez)
+  if (estado === 'aceptado' && !solicitud.id_pedido) {
+    if (solicitud.precio_estimado == null) {
+      return res.status(400).json({ error: 'No se puede aceptar un presupuesto sin precio estimado' });
+    }
+    const direccion = await DireccionEntrega.findOne({
+      where: { id_usuario: solicitud.id_usuario },
+      order: [['principal', 'DESC'], ['id_direccion', 'ASC']],
+    });
+    if (!direccion) {
+      return res.status(400).json({ error: 'El cliente no tiene dirección de entrega; añádela en Mi cuenta antes de aceptar' });
+    }
+    const entrega = new Date(solicitud.fecha_entrega).toISOString().slice(0, 10);
+    try {
+      await sequelize.transaction(async (t) => {
+        const pedido = await Pedido.create({
+          id_usuario: solicitud.id_usuario,
+          id_direccion: direccion.id_direccion,
+          fecha: new Date(),
+          estado: 'pendiente',
+          importe_total: Number(solicitud.precio_estimado).toFixed(2),
+          observaciones: `Presupuesto #${solicitud.id_presupuesto} aceptado — ${solicitud.tipo_evento}: ${solicitud.descripcion} (entrega: ${entrega})`,
+        }, { transaction: t });
+        await solicitud.update({ estado, id_pedido: pedido.id_pedido }, { transaction: t });
+      });
+    } catch (err) {
+      return res.status(500).json({ error: err.message });
+    }
+    const actualizada = await SolicitudPresupuesto.findByPk(req.params.id, incluirSolicitud);
+    return res.json(actualizada);
   }
   await solicitud.update({ estado });
   res.json(solicitud);

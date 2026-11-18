@@ -41,7 +41,7 @@ export default function AdminPedidos() {
           <thead>
             <tr>
               <th>#</th><th>Fecha</th><th>Cliente</th><th>Productos</th>
-              <th>Estado</th><th className="text-end">Importe</th>
+              <th>Estado</th><th>Cambiar estado</th><th className="text-end">Importe</th>
             </tr>
           </thead>
           <tbody>
@@ -50,11 +50,13 @@ export default function AdminPedidos() {
                 <td>{p.id_pedido}</td>
                 <td>{fmtFechaCorta(p.fecha)}</td>
                 <td>{p.usuario ? `${p.usuario.nombre} ${p.usuario.apellidos}` : p.id_usuario}</td>
-                <td>
-                  {(p.lineas_pedido ?? []).map((l) => `${l.producto?.nombre ?? l.id_producto} × ${l.cantidad}`).join(', ')}
+                <td style={{ maxWidth: 260 }}>
+                  {(p.lineas_pedido ?? []).length > 0
+                    ? p.lineas_pedido.map((l) => `${l.producto?.nombre ?? l.id_producto} × ${l.cantidad}`).join(', ')
+                    : (p.observaciones || '—')}
                 </td>
+                <td><Badge bg={variantePedido(p.estado)}>{p.estado}</Badge></td>
                 <td>
-                  <Badge bg={variantePedido(p.estado)} className="me-2">{p.estado}</Badge>
                   <Form.Select
                     size="sm"
                     value={p.estado}

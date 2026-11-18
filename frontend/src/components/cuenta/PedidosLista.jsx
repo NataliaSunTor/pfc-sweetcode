@@ -11,7 +11,7 @@ export default function PedidosLista() {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    get('/api/pedidos')
+    get('/api/pedidos?propios=1')
       .then(setPedidos)
       .catch((e) => setError(e.message))
       .finally(() => setCargando(false));

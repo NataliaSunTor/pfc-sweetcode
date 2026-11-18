@@ -31,6 +31,14 @@ app.use(cors({
   origin: (origin, cb) => cb(null, esOrigenPermitido(origin)),
 }));
 
+// La API devuelve datos dinámicos y autenticados: que el navegador no cachee nada
+// (sin esto, los GET se sirven a veces de la caché heurística y el botón "Actualizar"
+// del panel parece no hacer nada).
+app.use('/api', (req, res, next) => {
+  res.set('Cache-Control', 'no-store');
+  next();
+});
+
 // Subidas de imágenes: se guardan en ./uploads y se sirven en /uploads
 const uploadsDir = path.join(process.cwd(), 'uploads');
 if (!fs.existsSync(uploadsDir)) fs.mkdirSync(uploadsDir, { recursive: true });

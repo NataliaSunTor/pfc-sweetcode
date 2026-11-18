@@ -68,14 +68,12 @@ export default function ProductoDetalle() {
           <p className="text-muted">{producto.descripcion}</p>
 
           <dl className="row mt-4">
-            <dt className="col-4">Precio</dt>
+            <dt className="col-4">Precio (sin IVA)</dt>
             <dd className="col-8">{fmtPrecio(precioBase)}</dd>
             <dt className="col-4">IVA ({iva}%)</dt>
             <dd className="col-8">{fmtPrecio(precioBase * (iva / 100))}</dd>
             <dt className="col-4 fw-bold">Total con IVA</dt>
             <dd className="col-8 fw-bold sc-precio">{fmtPrecio(totalConIva)}</dd>
-            <dt className="col-4">Stock</dt>
-            <dd className="col-8">{sinStock ? <span className="text-danger">Sin stock</span> : producto.stock}</dd>
           </dl>
 
           <div className="sc-acciones-detalle d-flex align-items-center gap-3 mt-4">
@@ -99,6 +97,7 @@ export default function ProductoDetalle() {
             <Button variant="caramelo" size="lg" disabled={sinStock || añadido} onClick={añadir}>
               {añadido ? <><FaCheck /> Añadido</> : 'Añadir al carrito'}
             </Button>
+            {sinStock && <span className="text-danger">Sin stock</span>}
           </div>
           <Button as={Link} to="/tienda" variant="link" className="mt-3 p-0">
             ← Seguir comprando

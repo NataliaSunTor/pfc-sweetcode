@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Card, Col, Row } from 'react-bootstrap';
+import { Button, Card, Col, Row } from 'react-bootstrap';
 import { get } from '../../api/client.js';
 import { fmtPrecio } from '../../utils/format.js';
 import { Cargando, AlertaError } from '../../components/Estado.jsx';
@@ -7,8 +7,10 @@ import { Cargando, AlertaError } from '../../components/Estado.jsx';
 export default function AdminInicio() {
   const [resumen, setResumen] = useState(null);
   const [error, setError] = useState(null);
+  const [cargando, setCargando] = useState(true);
 
-  useEffect(() => {
+  function cargar() {
+    setCargando(true);
     Promise.all([get('/api/pedidos'), get('/api/presupuestos')])
       .then(([pedidos, solicitudes]) => {
         const ventas = pedidos
@@ -21,11 +23,14 @@ export default function AdminInicio() {
           presupuestosPendientes: solicitudes.filter((s) => s.estado === 'pendiente').length,
         });
       })
-      .catch((e) => setError(e.message));
-  }, []);
+      .catch((e) => setError(e.message))
+      .finally(() => setCargando(false));
+  }
+
+  useEffect(cargar, []);
 
   if (error) return <AlertaError error={error} />;
-  if (!resumen) return <Cargando texto="Cargando resumen…" />;
+  if (!resumen && cargando) return <Cargando texto="Cargando resumen…" />;
 
   const tarjetas = [
     { titulo: 'Pedidos totales', valor: resumen.pedidosTotales },
@@ -35,7 +40,13 @@ export default function AdminInicio() {
   ];
 
   return (
-    <Row xs={1} sm={2} className="g-3">
+    <div>
+      <div className="d-flex justify-content-end mb-3">
+        <Button variant="outline-marron" size="sm" onClick={cargar} disabled={cargando}>
+          {cargando ? 'Actualizando…' : 'Actualizar'}
+        </Button>
+      </div>
+      <Row xs={1} sm={2} className="g-3">
       {tarjetas.map((t) => (
         <Col key={t.titulo}>
           <Card className="sc-tarjeta text-center">
@@ -46,6 +57,7 @@ export default function AdminInicio() {
           </Card>
         </Col>
       ))}
-    </Row>
+      </Row>
+    </div>
   );
 }

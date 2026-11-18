@@ -30,7 +30,7 @@ const esStaff = (req) => ['admin', 'pastelero'].includes(req.usuario.rol);
  * @openapi
  * /api/pedidos:
  *   get:
- *     summary: Lista pedidos (cliente ve solo los suyos; staff los ve todos)
+ *     summary: Lista pedidos (cliente ve solo los suyos; staff los ve todos; con ?propios=1 cualquiera ve solo los suyos)
  *     tags: [Pedidos]
  *     security: [{ bearerAuth: [] }]
  *     responses:
@@ -38,7 +38,8 @@ const esStaff = (req) => ['admin', 'pastelero'].includes(req.usuario.rol);
  *       401: { description: Falta token }
  */
 router.get('/', proteger, async (req, res) => {
-  const where = esStaff(req) ? {} : { id_usuario: req.usuario.id_usuario };
+  const soloPropios = req.query.propios === '1';
+  const where = !esStaff(req) || soloPropios ? { id_usuario: req.usuario.id_usuario } : {};
   const pedidos = await Pedido.findAll({ ...incluirPedido, where, order: [['id_pedido', 'DESC']] });
   res.json(pedidos);
 });

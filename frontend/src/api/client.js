@@ -47,7 +47,8 @@ export async function api(path, { method = 'GET', body, formData, auth = true } 
     payload = JSON.stringify(body);
   }
 
-  const res = await fetch(`${BASE_URL}${path}`, { method, headers, body: payload });
+  // cache: 'no-store' → los GET de la API nunca se sirven de la caché del navegador
+  const res = await fetch(`${BASE_URL}${path}`, { method, headers, body: payload, cache: 'no-store' });
 
   if (res.status === 401 && auth) {
     limpiarSesion();

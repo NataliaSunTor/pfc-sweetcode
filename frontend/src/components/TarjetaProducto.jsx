@@ -1,11 +1,26 @@
+import { useState } from 'react';
 import { Badge, Button, Card } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
-import { FaBirthdayCake } from 'react-icons/fa';
+import { FaBirthdayCake, FaCartPlus, FaCheck } from 'react-icons/fa';
+import { useCart } from '../context/CartContext.jsx';
 import { urlImagen } from '../utils/imagen.js';
 import { fmtPrecio } from '../utils/format.js';
+import { esEscritorio } from '../utils/escritorio.js';
 
 export default function TarjetaProducto({ producto }) {
+  const { addItem, abrirSidebar } = useCart();
+  const [añadido, setAñadido] = useState(false);
   const imagen = urlImagen(producto.imagen);
+  const sinStock = producto.stock <= 0;
+  // En la tienda se muestra siempre el precio con IVA incluido
+  const precioConIva = Number(producto.precio) * (1 + (Number(producto.iva) || 0) / 100);
+
+  function añadir() {
+    addItem(producto, 1);
+    setAñadido(true);
+    setTimeout(() => setAñadido(false), 1500);
+    if (esEscritorio()) abrirSidebar();
+  }
 
   return (
     <Card className="h-100 sc-tarjeta">
@@ -26,11 +41,24 @@ export default function TarjetaProducto({ producto }) {
           {producto.nombre}
         </Card.Title>
         <Card.Text className="text-muted small flex-grow-1">{producto.descripcion}</Card.Text>
-        <div className="d-flex align-items-center justify-content-between mt-2">
-          <span className="sc-precio">{fmtPrecio(producto.precio)}</span>
-          <Button as={Link} to={`/tienda/${producto.id_producto}`} variant="outline-marron" size="sm">
-            Ver detalle
-          </Button>
+        <div className="d-flex align-items-center justify-content-between mt-2 gap-2">
+          <span className="sc-precio">
+            {fmtPrecio(precioConIva)} <small className="text-muted fw-normal">IVA incl.</small>
+          </span>
+          <div className="d-flex gap-2">
+            <Button
+              variant={añadido ? 'success' : 'caramelo'}
+              size="sm"
+              disabled={sinStock || añadido}
+              onClick={añadir}
+              title={sinStock ? 'Sin stock' : 'Añadir al carrito'}
+            >
+              {añadido ? <FaCheck /> : <FaCartPlus />}
+            </Button>
+            <Button as={Link} to={`/tienda/${producto.id_producto}`} variant="outline-marron" size="sm">
+              Ver detalle
+            </Button>
+          </div>
         </div>
       </Card.Body>
     </Card>

@@ -5,12 +5,15 @@ import { urlImagen } from '../../utils/imagen.js';
 import { AlertaError } from '../Estado.jsx';
 
 const VACIO = { nombre: '', descripcion: '', precio: '', iva: '10', stock: '0', id_categoria: '', activo: true };
+const NUEVA_CAT = '__nueva__';
+const VACIA_CAT = { nombre: '', descripcion: '' };
 
 // Modal de alta/edición de producto. Si se elige fichero, se sube antes con POST /api/upload
 // y la { url } devuelta se guarda en el campo imagen.
 export default function ModalProducto({ producto, onCerrar, onGuardado }) {
   const [form, setForm] = useState(VACIO);
   const [categorias, setCategorias] = useState([]);
+  const [nuevaCat, setNuevaCat] = useState(VACIA_CAT);
   const [fichero, setFichero] = useState(null);
   const [enviando, setEnviando] = useState(false);
   const [error, setError] = useState(null);
@@ -34,6 +37,7 @@ export default function ModalProducto({ producto, onCerrar, onGuardado }) {
       setForm(VACIO);
     }
     setFichero(null);
+    setNuevaCat(VACIA_CAT);
     setError(null);
   }, [producto]);
 
@@ -49,6 +53,16 @@ export default function ModalProducto({ producto, onCerrar, onGuardado }) {
     setError(null);
     setEnviando(true);
     try {
+      // Si se eligió "crear nueva categoría", se crea primero y se usa su id
+      let idCategoria = form.id_categoria;
+      if (idCategoria === NUEVA_CAT) {
+        const creada = await post('/api/categorias', {
+          nombre: nuevaCat.nombre.trim(),
+          descripcion: nuevaCat.descripcion.trim() || nuevaCat.nombre.trim(),
+        });
+        setCategorias((cs) => [...cs, creada]);
+        idCategoria = String(creada.id_categoria);
+      }
       let imagen = producto?.imagen ?? null;
       if (fichero) {
         const fd = new FormData();
@@ -62,7 +76,7 @@ export default function ModalProducto({ producto, onCerrar, onGuardado }) {
         precio: Number(form.precio),
         iva: Number(form.iva),
         stock: Number(form.stock),
-        id_categoria: Number(form.id_categoria),
+        id_categoria: Number(idCategoria),
         activo: form.activo ? 1 : 0,
         imagen,
       };
@@ -115,8 +129,30 @@ export default function ModalProducto({ producto, onCerrar, onGuardado }) {
               {categorias.map((c) => (
                 <option key={c.id_categoria} value={c.id_categoria}>{c.nombre}</option>
               ))}
+              <option value={NUEVA_CAT}>＋ Crear nueva categoría…</option>
             </Form.Select>
           </Form.Group>
+          {form.id_categoria === NUEVA_CAT && (
+            <div className="border rounded p-3 mb-3 bg-light">
+              <Form.Group className="mb-2">
+                <Form.Label>Nombre de la categoría</Form.Label>
+                <Form.Control
+                  value={nuevaCat.nombre}
+                  onChange={(e) => setNuevaCat((c) => ({ ...c, nombre: e.target.value }))}
+                  placeholder="p. ej. tartas saladas"
+                  required
+                />
+              </Form.Group>
+              <Form.Group className="mb-0">
+                <Form.Label>Descripción</Form.Label>
+                <Form.Control
+                  value={nuevaCat.descripcion}
+                  onChange={(e) => setNuevaCat((c) => ({ ...c, descripcion: e.target.value }))}
+                  placeholder="opcional"
+                />
+              </Form.Group>
+            </div>
+          )}
           <Form.Group className="mb-3">
             <Form.Label>Imagen</Form.Label>
             {imagenActual && !fichero && (
