@@ -1,10 +1,11 @@
 import { Badge, Button, Card } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import { fmtFecha } from '../utils/format.js';
+import { stripMarkdown } from '../utils/markdown.js';
 
 export default function TarjetaArticulo({ articulo }) {
-  const extracto =
-    articulo.contenido.length > 140 ? `${articulo.contenido.slice(0, 140)}…` : articulo.contenido;
+  const limpio = stripMarkdown(articulo.contenido);
+  const extracto = limpio.length > 140 ? `${limpio.slice(0, 140)}…` : limpio;
 
   return (
     <Card className="h-100 sc-tarjeta">

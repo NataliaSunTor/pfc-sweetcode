@@ -148,7 +148,7 @@ h6,
 
 .sc-tarjeta-img {
   height: 180px;
-  object-fit: cover;
+  object-fit: contain; /* la foto se ve entera, sin recortar */
   background-color: var(--beige);
 }
 
@@ -175,9 +175,38 @@ h6,
 .sc-detalle-img {
   width: 100%;
   max-height: 420px;
-  object-fit: cover;
+  object-fit: contain; /* la foto se ve entera, sin recortar */
   border-radius: 0.75rem;
   background-color: var(--beige);
+}
+
+/* Contenido del blog con formato (markdown básico) */
+.sc-contenido-blog h1,
+.sc-contenido-blog h2,
+.sc-contenido-blog h3 {
+  color: var(--marron);
+  margin: 1.2rem 0 0.5rem;
+}
+
+.sc-contenido-blog p {
+  margin-bottom: 0.9rem;
+  line-height: 1.7;
+}
+
+.sc-contenido-blog ul {
+  margin-bottom: 0.9rem;
+  padding-left: 1.4rem;
+}
+
+.sc-contenido-blog code {
+  background-color: var(--beige);
+  border-radius: 0.3rem;
+  padding: 0.1rem 0.35rem;
+  font-size: 0.9em;
+}
+
+.sc-contenido-blog a {
+  color: var(--caramelo-oscuro);
 }
 
 /* Carrito */

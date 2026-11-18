@@ -1,16 +1,19 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Button, Form, Modal } from 'react-bootstrap';
+import { FaBold, FaItalic, FaLink, FaListUl, FaHeading } from 'react-icons/fa';
 import { get, post, put } from '../../api/client.js';
 import { AlertaError } from '../Estado.jsx';
 
 const VACIO = { titulo: '', contenido: '', etiquetas: '', id_categoria: '', publicado: false };
 
 // Modal de alta/edición de entrada de blog. usa POST/PUT /api/articulos
+// El contenido admite formato markdown básico (negrita, cursiva, enlaces, listas, títulos)
 export default function ModalArticulo({ articulo, onCerrar, onGuardado }) {
   const [form, setForm] = useState(VACIO);
   const [categorias, setCategorias] = useState([]);
   const [enviando, setEnviando] = useState(false);
   const [error, setError] = useState(null);
+  const refContenido = useRef(null);
 
   useEffect(() => {
     get('/api/categorias').then(setCategorias).catch(() => {});
@@ -36,6 +39,38 @@ export default function ModalArticulo({ articulo, onCerrar, onGuardado }) {
       const valor = e.target.type === 'checkbox' ? e.target.checked : e.target.value;
       setForm((f) => ({ ...f, [campo]: valor }));
     };
+  }
+
+  // Envuelve la selección del textarea con los marcadores markdown correspondientes
+  function aplicarFormato(antes, despues = antes, placeholder = '') {
+    const ta = refContenido.current;
+    if (!ta) return;
+    const inicio = ta.selectionStart;
+    const fin = ta.selectionEnd;
+    const sel = form.contenido.slice(inicio, fin) || placeholder;
+    const nuevo = form.contenido.slice(0, inicio) + antes + sel + despues + form.contenido.slice(fin);
+    setForm((f) => ({ ...f, contenido: nuevo }));
+    requestAnimationFrame(() => {
+      ta.focus();
+      ta.selectionStart = inicio + antes.length;
+      ta.selectionEnd = ta.selectionStart + sel.length;
+    });
+  }
+
+  function formatoLista() {
+    const ta = refContenido.current;
+    if (!ta) return;
+    const inicio = ta.selectionStart;
+    const fin = ta.selectionEnd;
+    const sel = form.contenido.slice(inicio, fin) || 'elemento';
+    const conGuion = sel.split('\n').map((l) => (l.startsWith('- ') ? l : `- ${l}`)).join('\n');
+    const nuevo = form.contenido.slice(0, inicio) + conGuion + form.contenido.slice(fin);
+    setForm((f) => ({ ...f, contenido: nuevo }));
+    requestAnimationFrame(() => {
+      ta.focus();
+      ta.selectionStart = inicio;
+      ta.selectionEnd = inicio + conGuion.length;
+    });
   }
 
   async function enviar(e) {
@@ -74,7 +109,32 @@ export default function ModalArticulo({ articulo, onCerrar, onGuardado }) {
           </Form.Group>
           <Form.Group className="mb-3">
             <Form.Label>Contenido</Form.Label>
-            <Form.Control as="textarea" rows={6} value={form.contenido} onChange={set('contenido')} required />
+            <div className="d-flex gap-1 mb-2">
+              <Button type="button" variant="outline-marron" size="sm" title="Negrita" onClick={() => aplicarFormato('**', '**', 'texto')}>
+                <FaBold />
+              </Button>
+              <Button type="button" variant="outline-marron" size="sm" title="Cursiva" onClick={() => aplicarFormato('*', '*', 'texto')}>
+                <FaItalic />
+              </Button>
+              <Button type="button" variant="outline-marron" size="sm" title="Enlace" onClick={() => aplicarFormato('[', '](https://)', 'texto')}>
+                <FaLink />
+              </Button>
+              <Button type="button" variant="outline-marron" size="sm" title="Lista" onClick={formatoLista}>
+                <FaListUl />
+              </Button>
+              <Button type="button" variant="outline-marron" size="sm" title="Título" onClick={() => aplicarFormato('## ', '', 'título')}>
+                <FaHeading />
+              </Button>
+            </div>
+            <Form.Control
+              as="textarea"
+              rows={8}
+              value={form.contenido}
+              onChange={set('contenido')}
+              ref={refContenido}
+              required
+            />
+            <Form.Text>Se admite formato básico: **negrita**, *cursiva*, [enlace](https://…), - listas, ## título.</Form.Text>
           </Form.Group>
           <Form.Group className="mb-3">
             <Form.Label>Etiquetas (separadas por comas)</Form.Label>

@@ -4,6 +4,7 @@ import { Link, useParams } from 'react-router-dom';
 import { get } from '../api/client.js';
 import { fmtFecha } from '../utils/format.js';
 import { Cargando, AlertaError } from '../components/Estado.jsx';
+import MarkdownLite from '../components/MarkdownLite.jsx';
 
 export default function ArticuloDetalle() {
   const { id } = useParams();
@@ -40,9 +41,7 @@ export default function ArticuloDetalle() {
         {autor && <small className="text-muted">· {autor}</small>}
       </div>
       <h1 className="sc-titulo mb-4">{articulo.titulo}</h1>
-      {articulo.contenido.split(/\n+/).map((parrafo, i) => (
-        <p key={i}>{parrafo}</p>
-      ))}
+      <MarkdownLite contenido={articulo.contenido} />
       {articulo.etiquetas && (
         <p className="text-muted small mt-4">Etiquetas: {articulo.etiquetas}</p>
       )}
