@@ -17,7 +17,7 @@ jobs:
         image: mysql:8.4
         env:
           MYSQL_ROOT_PASSWORD: rootpass
-          MYSQL_DATABASE: sweetcode_test
+          MYSQL_DATABASE: sweetcode
           MYSQL_USER: sweetcode
           MYSQL_PASSWORD: sweetcodepass
         ports:
@@ -31,7 +31,7 @@ jobs:
     env:
       DB_HOST: 127.0.0.1
       DB_PORT: 3306
-      DB_NAME: sweetcode_test
+      DB_NAME: sweetcode
       DB_USER: sweetcode
       DB_PASSWORD: sweetcodepass
       JWT_SECRET: ci-secret-solo-para-tests
@@ -57,7 +57,7 @@ jobs:
       - name: Crear tablas (database-first)
         run: |
           sudo apt-get install -y mysql-client || true
-          mysql -h 127.0.0.1 -usweetcode -psweetcodepass sweetcode_test < sql/sweetcode_schema.sql
+          mysql -h 127.0.0.1 -usweetcode -psweetcodepass sweetcode < sql/sweetcode_schema.sql
 
       - name: Poblar BD (seed)
         working-directory: backend
