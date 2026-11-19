@@ -32,12 +32,12 @@ Plataforma web completa: venta de productos, pedidos, presupuestos, blog y panel
 │   ├── src/models/         # MAYÚSCULAS: Usuario.js, Producto.js, Pedido.js, ... + relaciones.js
 │   ├── src/routes/         # auth, productos, pedidos, direcciones, presupuestos, articulos,
 │   │                       # categorias, usuarios, upload  (cada endpoint con @openapi)
-│   ├── src/seed.js         # datos de prueba (idempotente, findOrCreate)
+│   ├── src/seed.js         # datos demo estáticos (vacía tablas y repuebla; re-ejecutable)
 │   ├── tests/api.test.js   # 12 tests (node:test + Supertest)
 │   └── uploads/            # imágenes subidas (servidas en /uploads, NO se commitean)
 └── frontend/
     ├── DockerFile          # build Vite + nginx
-    ├── nginx/default.conf  # SPA fallback (try_files → /index.html)
+    ├── nginx/default.conf   # SPA fallback (try_files → /index.html)
     └── src/                # React: tienda, carrito, blog, cuenta, panel admin/staff
 ```
 
@@ -50,7 +50,7 @@ docker compose up -d                  # 2. levanta mysql, backend, frontend y gr
 # 3. crea las tablas (database-first: la estructura la manda el EER)
 docker compose exec -T mysql mysql -u$MYSQL_USER -p$MYSQL_PASSWORD $MYSQL_DATABASE < sql/sweetcode_schema.sql
 
-docker compose exec backend node src/seed.js     # 4. poblar BD (idempotente)
+docker compose exec backend node src/seed.js     # 4. poblar BD (datos demo)
 docker compose exec backend npm test            # 5. correr los tests
 ```
 
@@ -59,6 +59,21 @@ docker compose exec backend npm test            # 5. correr los tests
 - Front (build nginx): http://localhost:5173
 - MySQL Workbench: 127.0.0.1:3306 (user/pass en `.env`)
 - Grafana: http://localhost:3001 (datasource y dashboards provisionados al arrancar)
+
+
+### Cuentas demo (tras el seed)
+
+| Rol | Email | Contraseña |
+|---|---|---|
+| admin | adming@testing.com | admin123 |
+| pastelero | pastelero@testing.com | pastelero123 |
+| cliente | cliente@testing.com | cliente123 |
+| cliente | luis@testing.com | cliente123 |
+
+> El seed debe ejecutarse **dentro del contenedor** (`docker compose exec backend ...`):
+> el host `mysql` solo se resuelve en la red interna de Docker, nunca desde Windows.
+
+
 
 ## API (resumen)
 
