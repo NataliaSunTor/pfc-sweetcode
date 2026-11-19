@@ -12,7 +12,6 @@ services:
       - "3306:3306"   # MySQL Workbench: 127.0.0.1:3306
     volumes:
       - mysql_data:/var/lib/mysql
-      - ./backend:/app
     healthcheck:
       test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-p${MYSQL_ROOT_PASSWORD}"]
       interval: 10s
