@@ -15,6 +15,7 @@ import MiCuenta from './pages/MiCuenta.jsx';
 import AdminInicio from './pages/admin/AdminInicio.jsx';
 import AdminProductos from './pages/admin/AdminProductos.jsx';
 import AdminCategorias from './pages/admin/AdminCategorias.jsx';
+import AdminVentas from './pages/admin/AdminVentas.jsx';
 import AdminPedidos from './pages/admin/AdminPedidos.jsx';
 import AdminPresupuestos from './pages/admin/AdminPresupuestos.jsx';
 import AdminUsuarios from './pages/admin/AdminUsuarios.jsx';
@@ -45,6 +46,7 @@ export default function App() {
             <Route path="/admin" element={<AdminInicio />} />
             <Route path="/admin/productos" element={<AdminProductos />} />
             <Route path="/admin/categorias" element={<AdminCategorias />} />
+            <Route path="/admin/ventas" element={<AdminVentas />} />
             <Route path="/admin/pedidos" element={<AdminPedidos />} />
             <Route path="/admin/presupuestos" element={<AdminPresupuestos />} />
             <Route path="/admin/usuarios" element={<AdminUsuarios />} />

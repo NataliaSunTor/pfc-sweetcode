@@ -17,6 +17,7 @@ export default function AdminLayout() {
             <Nav.Link as={NavLink} to="/admin/blog">Blog</Nav.Link>
             <Nav.Link as={NavLink} to="/admin/pedidos">Pedidos</Nav.Link>
             <Nav.Link as={NavLink} to="/admin/presupuestos">Presupuestos</Nav.Link>
+            {rol === 'admin' && <Nav.Link as={NavLink} to="/admin/ventas">Ventas</Nav.Link>}
             {rol === 'admin' && <Nav.Link as={NavLink} to="/admin/usuarios">Usuarios</Nav.Link>}
           </Nav>
         </Col>

@@ -45,11 +45,19 @@ export default function ModalUsuario({ usuario, onCerrar, onGuardado }) {
           <AlertaError error={error} />
           <Form.Group className="mb-3">
             <Form.Label>Rol</Form.Label>
-            <Form.Select value={form.rol} onChange={(e) => setForm((f) => ({ ...f, rol: e.target.value }))}>
-              <option value="cliente">cliente</option>
-              <option value="pastelero">pastelero</option>
-              <option value="admin">admin</option>
-            </Form.Select>
+            {usuario.rol === 'admin' ? (
+              <>
+                <Form.Select value="admin" disabled>
+                  <option value="admin">admin</option>
+                </Form.Select>
+                <Form.Text className="text-muted">El rol admin no se puede cambiar.</Form.Text>
+              </>
+            ) : (
+              <Form.Select value={form.rol} onChange={(e) => setForm((f) => ({ ...f, rol: e.target.value }))}>
+                <option value="pastelero">pastelero</option>
+                <option value="cliente">cliente</option>
+              </Form.Select>
+            )}
           </Form.Group>
           <Form.Group className="mb-3">
             <Form.Label>Teléfono</Form.Label>

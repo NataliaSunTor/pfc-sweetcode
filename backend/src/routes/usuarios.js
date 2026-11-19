@@ -27,7 +27,7 @@ const adminsActivos = (exceptoId = null) =>
  * @openapi
  * /api/usuarios:
  *   get:
- *     summary: Lista todos los usuarios (solo admin). Sin password_hash
+ *     summary: Lista usuarios (solo admin). Sin password_hash. Filtros opcionales: ?roles=admin,pastelero y ?email=texto (búsqueda parcial, incluye clientes)
  *     tags: [Usuarios]
  *     security: [{ bearerAuth: [] }]
  *     responses:
@@ -36,7 +36,15 @@ const adminsActivos = (exceptoId = null) =>
  *       403: { description: Sin permisos (no admin) }
  */
 router.get('/', async (req, res) => {
-  const usuarios = await Usuario.findAll({ order: [['id_usuario', 'ASC']] });
+  const where = {};
+  if (req.query.roles) {
+    const roles = String(req.query.roles).split(',').map((r) => r.trim()).filter((r) => ROLES.includes(r));
+    if (roles.length > 0) where.rol = { [Op.in]: roles };
+  }
+  if (req.query.email) {
+    where.email = { [Op.like]: `%${String(req.query.email).trim()}%` };
+  }
+  const usuarios = await Usuario.findAll({ where, order: [['id_usuario', 'ASC']] });
   res.json(usuarios);
 });
 
