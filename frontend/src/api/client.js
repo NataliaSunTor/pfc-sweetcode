@@ -52,7 +52,6 @@ export async function api(path, { method = 'GET', body, formData, auth = true } 
 
   if (res.status === 401 && auth) {
     limpiarSesion();
-    if (window.location.pathname !== '/login') window.location.href = '/login';
   }
 
   let data = null;
