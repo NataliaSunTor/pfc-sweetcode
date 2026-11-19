@@ -34,7 +34,7 @@ Plataforma web completa: venta de productos, pedidos, presupuestos, blog y panel
 │   │                       # categorias, usuarios, upload  (cada endpoint con @openapi)
 │   ├── src/seed.js         # datos demo estáticos (vacía tablas y repuebla; re-ejecutable)
 │   ├── tests/api.test.js   # 12 tests (node:test + Supertest)
-│   └── uploads/            # imágenes subidas (servidas en /uploads, NO se commitean)
+│   └── uploads/            #  imágenes servidas en /uploads (las 7 de la demo SÍ se commitean; las subidas por usuarios, no)
 └── frontend/
     ├── DockerFile          # build Vite + nginx
     ├── nginx/default.conf   # SPA fallback (try_files → /index.html)
@@ -43,15 +43,29 @@ Plataforma web completa: venta de productos, pedidos, presupuestos, blog y panel
 
 ## Arranque
 
+Windows/Powershell
 ```bash
-cp .env.example .env                  # 1. rellena tus credenciales reales
-docker compose up -d                  # 2. levanta mysql, backend, frontend y grafana
+Copy-Item .env.example .env
+docker compose up -d
 
-# 3. crea las tablas (database-first: la estructura la manda el EER)
+# crea las tablas (database-first: la estructura la manda el EER)
+Get-Content sql/sweetcode_schema.sql | docker compose exec -T mysql mysql -usweetcode_user -psweetcode_pass sweetcode
+
+# poblar la BD con los datos demo (siempre desde dentro del contenedor)
+docker compose exec backend node src/seed.js
+
+# (opcional) correr los tests
+docker compose exec backend npm test
+```
+
+Linux/macOS
+```bash
+cp .env.example .env
+docker compose up -d
+
 docker compose exec -T mysql mysql -u$MYSQL_USER -p$MYSQL_PASSWORD $MYSQL_DATABASE < sql/sweetcode_schema.sql
-
-docker compose exec backend node src/seed.js     # 4. poblar BD (datos demo)
-docker compose exec backend npm test            # 5. correr los tests
+docker compose exec backend node src/seed.js
+docker compose exec backend npm test
 ```
 
 - API: http://localhost:4000 
