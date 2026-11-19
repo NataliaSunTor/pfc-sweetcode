@@ -140,7 +140,7 @@ export default function CarritoContenido({ alTerminar }) {
             <Cargando texto="Cargando direcciones…" />
           ) : direcciones.length === 0 ? (
             <Alert variant="warning" className="py-2 mb-0">
-              No tienes direcciones. <Link to="/cuenta">Añade una en Mi cuenta</Link>.
+              No tienes direcciones. Añade una en Mi cuenta.
             </Alert>
           ) : (
             <Form.Select value={idDireccion} onChange={(e) => setIdDireccion(e.target.value)}>
