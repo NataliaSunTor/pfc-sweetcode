@@ -79,7 +79,7 @@ docker compose exec backend npm test
 
 | Rol | Email | Contraseña |
 |---|---|---|
-| admin | adming@testing.com | admin123 |
+| admin | admin@testing.com | admin123 |
 | pastelero | pastelero@testing.com | pastelero123 |
 | cliente | cliente@testing.com | cliente123 |
 | cliente | luis@testing.com | cliente123 |
