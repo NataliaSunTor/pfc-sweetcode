@@ -1,0 +1,86 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  backend-tests:
+    name: Backend (Node ${{ matrix.node }})
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node: [20]
+
+    services:
+      mysql:
+        image: mysql:8.4
+        env:
+          MYSQL_ROOT_PASSWORD: rootpass
+          MYSQL_DATABASE: sweetcode_test
+          MYSQL_USER: sweetcode
+          MYSQL_PASSWORD: sweetcodepass
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping -h localhost -prootpass"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=10
+
+    env:
+      DB_HOST: 127.0.0.1
+      DB_PORT: 3306
+      DB_NAME: sweetcode_test
+      DB_USER: sweetcode
+      DB_PASSWORD: sweetcodepass
+      JWT_SECRET: ci-secret-solo-para-tests
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node }}
+
+      - name: Instalar dependencias del backend
+        working-directory: backend
+        run: npm ci
+
+      - name: Esperar a MySQL
+        run: |
+          for i in $(seq 1 30); do
+            mysqladmin ping -h 127.0.0.1 -prootpass && break
+            sleep 2
+          done
+
+      - name: Crear tablas (database-first)
+        run: |
+          sudo apt-get install -y mysql-client || true
+          mysql -h 127.0.0.1 -usweetcode -psweetcodepass sweetcode_test < sql/sweetcode_schema.sql
+
+      - name: Poblar BD (seed)
+        working-directory: backend
+        run: node src/seed.js
+
+      - name: Tests (node:test + Supertest)
+        working-directory: backend
+        run: npm test
+
+  frontend-build:
+    name: Frontend (build Vite)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Instalar dependencias del frontend
+        working-directory: frontend
+        run: npm ci
+
+      - name: Build de producción
+        working-directory: frontend
+        run: npm run build
