@@ -43,7 +43,7 @@ export default function Contacto() {
           <div className="sc-tarjeta p-4 h-100">
             <h2 className="h5">🕒 Horario de recogida</h2>
             <ul className="list-unstyled mb-0">
-              <li><strong>Lunes a viernes:</strong> 9:00 – 20:00</li>
+              <li><strong>Lunes a viernes:</strong> 9:00 a 20:00</li>
               <li>
                 <strong>Sábados y domingos:</strong> solo recogidas por encargo,
                 de 9:00 a 13:00
@@ -56,10 +56,8 @@ export default function Contacto() {
           <div className="sc-tarjeta p-4 h-100">
             <h2 className="h5">🎂 Encargos personalizados</h2>
             <p className="mb-2">
-              ¿Tartas por encargo o celebraciones? Pídenos presupuesto desde la
-              tienda y te respondemos lo antes posible.
+              ¿Tartas por encargo o celebraciones? Pídenos presupuesto desde «Mi Cuenta» y te respondemos lo antes posible.
             </p>
-            <Link to="/tienda">Ir a la tienda</Link>
           </div>
         </Col>
       </Row>
