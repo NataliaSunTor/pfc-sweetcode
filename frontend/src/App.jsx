@@ -20,7 +20,9 @@ import AdminPedidos from './pages/admin/AdminPedidos.jsx';
 import AdminPresupuestos from './pages/admin/AdminPresupuestos.jsx';
 import AdminUsuarios from './pages/admin/AdminUsuarios.jsx';
 import AdminArticulos from './pages/admin/AdminArticulos.jsx';
-import { SobreNosotros, Contacto, NoEncontrada } from './pages/Paginas.jsx';
+import { NoEncontrada } from './pages/Paginas.jsx';
+import SobreNosotros from './pages/SobreNosotros.jsx';
+import Contacto from './pages/Contacto.jsx';
 
 export default function App() {
   return (

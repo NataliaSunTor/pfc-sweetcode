@@ -20,7 +20,7 @@ export default function Footer() {
           </Col>
           <Col md={4}>
             <h6>Horario</h6>
-            <p className="mb-0">Lunes a sábado, 9:00 — 20:00</p>
+            <p className="mb-0">L a V de 9:00 a 20:00 · S a D solo encargos, 9:00 a 13:00</p>
           </Col>
         </Row>
         <hr />
