@@ -21,7 +21,7 @@ services:
   backend:
     build:
       context: ./backend
-      dockerfile: DockerFile
+      dockerfile: Dockerfile
     container_name: sweetcode-backend
     restart: unless-stopped
     environment:
@@ -45,7 +45,7 @@ services:
   frontend:
     build:
       context: ./frontend
-      dockerfile: DockerFile
+      dockerfile: Dockerfile
     container_name: sweetcode-frontend
     restart: unless-stopped
     ports:
